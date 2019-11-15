@@ -1,0 +1,94 @@
+{% extends "superset/basic.html" %}
+
+{% block body %}
+<html>
+<body>
+
+<form action = "{{ url_for('Superset.take_input', dashboard_id = id)}}" method="post" enctype="multipart/form-data" id ='form1'>
+	<input
+      type="hidden"
+      name="csrf_token"
+      id="csrf_token"
+      value="{{ csrf_token() if csrf_token else '' }}" />
+
+  New dashboard name: <input type="text" name="new_dshbd_name" value="HelloDashboard"><br><br>
+
+	<p>The dashboard contains {{num_slices}} charts in it. Change metadata for each chart below</p><br>
+  
+  <script type="text/javascript">
+  function getP()
+  {
+    var nb = {{num_slices}};
+    var dict = {{slices_info|safe}};
+    var inputContainer = document.getElementById("form1");
+    for (var i = 0; i < nb; i++)
+    {
+      var chartheader = document.createElement("h4");
+      chartheader.innerHTML = "Slice " + (i+1) + ": " + dict['slice_name'][i] + " made from table " + dict['datasource_name'][i] + " in database " + dict['database_name'][i] ;
+      inputContainer.appendChild(chartheader);
+
+  		var label = document.createElement("label");
+      label.innerHTML = "new slice name";
+      inputContainer.appendChild(label);
+
+    	var newForm = document.createElement("input");
+    	newForm.setAttribute("type", "test");
+    	newForm.setAttribute("name", "slice_name_"+i);
+    	inputContainer.appendChild(newForm);
+    	inputContainer.appendChild(document.createElement("br"));
+
+      var label = document.createElement("label");
+      label.innerHTML = "new datasource name";
+      inputContainer.appendChild(label);
+
+      var newForm = document.createElement("input");
+      newForm.setAttribute("type", "list");
+      newForm.setAttribute("name", "datasource_name_"+i);
+      inputContainer.appendChild(newForm);
+      inputContainer.appendChild(document.createElement("br"));
+
+      var label = document.createElement("label");
+      label.innerHTML = "new datasource id";
+      inputContainer.appendChild(label);
+
+      var newForm = document.createElement("input");
+      newForm.setAttribute("type", "list");
+      newForm.setAttribute("name", "datasource_id_"+i);
+      inputContainer.appendChild(newForm);
+      inputContainer.appendChild(document.createElement("br"));
+
+      var label = document.createElement("label");
+      label.innerHTML = "new database name";
+      inputContainer.appendChild(label);
+
+      var newForm = document.createElement("input");
+      newForm.setAttribute("type", "list");
+      newForm.setAttribute("name", "database_name_"+i);
+      inputContainer.appendChild(newForm);
+      inputContainer.appendChild(document.createElement("br"));
+
+      var label = document.createElement("label");
+      label.innerHTML = "new database id";
+      inputContainer.appendChild(label);
+
+      var newForm = document.createElement("input");
+      newForm.setAttribute("type", "list");
+      newForm.setAttribute("name", "database_id_"+i);
+      inputContainer.appendChild(newForm);
+      inputContainer.appendChild(document.createElement("br"));
+      inputContainer.appendChild(document.createElement("br"));
+      inputContainer.appendChild(document.createElement("br"));
+    }
+	}
+	</script>
+
+  <script>getP()</script>  
+  <input type="submit" value="Submit">
+
+</form>
+
+<p>Click the "Submit" button and the form-data will be sent to the URL /superset/dashboard/change_datasource </p>
+
+</body>
+</html>
+{% endblock %}

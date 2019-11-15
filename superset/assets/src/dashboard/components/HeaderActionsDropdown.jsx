@@ -178,6 +178,11 @@ class HeaderActionsDropdown extends React.PureComponent {
           {t('Force refresh dashboard')}
         </MenuItem>
 
+        <MenuItem onClick = {() => {fetch(`/superset/dashboard/${dashboardId}/change_datasource`).then((res) => console.log(res))}}
+         target="_blank" href={`/superset/dashboard/${dashboardId}/user_input_form`}>
+          {t('Change datasource')}
+        </MenuItem>
+
         <RefreshIntervalModal
           refreshFrequency={refreshFrequency}
           onChange={this.changeRefreshInterval}
@@ -192,7 +197,7 @@ class HeaderActionsDropdown extends React.PureComponent {
         />
 
         {editMode && (
-          <MenuItem target="_blank" href={`/dashboard/edit/${dashboardId}`}>
+          <MenuItem href={`/dashboard/edit/${dashboardId}`}>
             {t('Edit dashboard metadata')}
           </MenuItem>
         )}
