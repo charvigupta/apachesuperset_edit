@@ -73,9 +73,11 @@ def version(verbose):
 def load_examples_run(load_test_data, only_metadata=False, force=False):
     if only_metadata:
         print("Loading examples metadata")
+        print("check1")
     else:
         examples_db = utils.get_example_database()
         print(f"Loading examples metadata and related data into {examples_db}")
+        print("check2")
 
     examples.load_css_templates()
 
@@ -127,6 +129,10 @@ def load_examples_run(load_test_data, only_metadata=False, force=False):
 
     print("Loading [Tabbed dashboard]")
     examples.load_tabbed_dashboard(only_metadata)
+
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    examples.load_couture_dashboard(only_metadata)
+    print("check3")
 
 
 @app.cli.command()

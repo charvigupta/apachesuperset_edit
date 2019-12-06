@@ -223,7 +223,7 @@ class YamlExportMixin(object):
 class DeleteMixin(object):
     def _delete(self, pk):
         """
-            Delete function logic, override to implement diferent logic
+            Delete function logic, override to implement different logic
             deletes the record with primary_key = pk
 
             :param pk:

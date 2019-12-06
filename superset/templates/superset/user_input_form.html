@@ -11,76 +11,79 @@
       id="csrf_token"
       value="{{ csrf_token() if csrf_token else '' }}" />
 
-  New dashboard name: <input type="text" name="new_dshbd_name" value="HelloDashboard"><br><br>
+    <h3> Dashboard : {{dashboard_name}}  </h3><br>
+    New dashboard name: <input type="text" name="new_dshbd_name" value="HelloDashboard"><br><br>
 
 	<p>The dashboard contains {{num_slices}} charts in it. Change metadata for each chart below</p><br>
-  
+
   <script type="text/javascript">
   function getP()
   {
     var nb = {{num_slices}};
-    var dict = {{slices_info|safe}};
+    var slicesDict = {{slices_info|safe}};
+    var dbDict = {{db_info|safe}};
+    var dbNames = Object.keys(dbDict);
+    var dsDict = {{ds_info|safe}};
+    var dsNames = Object.keys(dsDict);
+
     var inputContainer = document.getElementById("form1");
     for (var i = 0; i < nb; i++)
     {
-      var chartheader = document.createElement("h4");
-      chartheader.innerHTML = "Slice " + (i+1) + ": " + dict['slice_name'][i] + " made from table " + dict['datasource_name'][i] + " in database " + dict['database_name'][i] ;
-      inputContainer.appendChild(chartheader);
+        var chartheader = document.createElement("h4");
+        chartheader.innerHTML = "Slice " + (i+1) + ": " + slicesDict['slice_name'][i] + " ||  Database: " + slicesDict['database_name'][i] + " ||  Table: " + slicesDict['datasource_name'][i];
+        inputContainer.appendChild(chartheader);
 
+
+        <!--Slice Name Input Box-->
   		var label = document.createElement("label");
-      label.innerHTML = "new slice name";
-      inputContainer.appendChild(label);
-
+        label.innerHTML = "New slice name";
+        label.style.paddingRight = "1%";
+        inputContainer.appendChild(label);
     	var newForm = document.createElement("input");
     	newForm.setAttribute("type", "test");
     	newForm.setAttribute("name", "slice_name_"+i);
     	inputContainer.appendChild(newForm);
     	inputContainer.appendChild(document.createElement("br"));
 
-      var label = document.createElement("label");
-      label.innerHTML = "new datasource name";
-      inputContainer.appendChild(label);
+        <!--New datasource name dropdown-->
+        var label = document.createElement("label");
+        label.innerHTML = "New Datasource";
+        label.style.paddingRight = "1%";
+        inputContainer.appendChild(label);
+        var select = document.createElement("select");
+        for(var j = 0; j < dsNames.length; j++) {
+            var opt = dsNames[j];
+            var el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt;
+            select.appendChild(el);}
+        select.setAttribute("type", "select");
+        select.setAttribute("name", "datasource_name_"+i);
+        inputContainer.append(select);
+        inputContainer.appendChild(document.createElement("br"));
 
-      var newForm = document.createElement("input");
-      newForm.setAttribute("type", "list");
-      newForm.setAttribute("name", "datasource_name_"+i);
-      inputContainer.appendChild(newForm);
+      <!--New database name dropdown-->
+      var label = document.createElement("label");
+      label.innerHTML = "New Database";
+      label.style.paddingRight = "1%";
+      inputContainer.appendChild(label);
+      var select = document.createElement("select");
+      for(var j = 0; j < dbNames.length; j++) {
+        var opt = dbNames[j];
+        var el = document.createElement("option");
+        el.textContent = opt;
+        el.value = opt;
+        select.appendChild(el);}
+      select.setAttribute("type", "select");
+      select.setAttribute("name", "database_name_"+i);
+      inputContainer.append(select);
       inputContainer.appendChild(document.createElement("br"));
 
-      var label = document.createElement("label");
-      label.innerHTML = "new datasource id";
-      inputContainer.appendChild(label);
-
-      var newForm = document.createElement("input");
-      newForm.setAttribute("type", "list");
-      newForm.setAttribute("name", "datasource_id_"+i);
-      inputContainer.appendChild(newForm);
-      inputContainer.appendChild(document.createElement("br"));
-
-      var label = document.createElement("label");
-      label.innerHTML = "new database name";
-      inputContainer.appendChild(label);
-
-      var newForm = document.createElement("input");
-      newForm.setAttribute("type", "list");
-      newForm.setAttribute("name", "database_name_"+i);
-      inputContainer.appendChild(newForm);
-      inputContainer.appendChild(document.createElement("br"));
-
-      var label = document.createElement("label");
-      label.innerHTML = "new database id";
-      inputContainer.appendChild(label);
-
-      var newForm = document.createElement("input");
-      newForm.setAttribute("type", "list");
-      newForm.setAttribute("name", "database_id_"+i);
-      inputContainer.appendChild(newForm);
-      inputContainer.appendChild(document.createElement("br"));
       inputContainer.appendChild(document.createElement("br"));
       inputContainer.appendChild(document.createElement("br"));
     }
-	}
-	</script>
+  }
+  </script>
 
   <script>getP()</script>  
   <input type="submit" value="Submit">

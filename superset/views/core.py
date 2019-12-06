@@ -110,6 +110,7 @@ from .utils import (
 )
 
 from .helper_functions import*
+from .extract_db_info import database_dict, datasource_dict
 from superset.utils.core import decode_dashboards
 from superset.models.core import Dashboard
 import logging
@@ -2057,23 +2058,20 @@ class Superset(BaseSupersetView):
     def change(self, dashboard_id):
         print("Call to change dashboard")
         if request.method == "GET":
-            print("Hello There in post")
             str_id = list(str(dashboard_id))
             x = models.Dashboard.export_dashboards(str_id)
             x = json.loads(x)
-            # print(x)
+            name = x["dashboards"][0]["__Dashboard__"]["dashboard_title"]
             num = len(x["dashboards"][0]["__Dashboard__"]["slices"])
             slices_dict = current_slices_info(x)
-            # slice_name, datasource_name, database_name = current_slices_info(x)
 
-            return self.render_template("/superset/user_input_form.html", 
-                id = dashboard_id, 
+            return self.render_template("/superset/user_input_form.html",
+                id = dashboard_id,
+                dashboard_name = name,
                 num_slices = num,
-                slices_info = slices_dict)
-                 
-                # slice_name_list = slice_name, 
-                # datasource_name_list = datasource_name, 
-                # database_name_list = database_name)
+                slices_info = slices_dict,
+                db_info = database_dict,
+                ds_info = datasource_dict)
 
     @api
     @expose("/dashboard/<int:dashboard_id>/change_datasource", methods=["POST"])
@@ -2098,9 +2096,13 @@ class Superset(BaseSupersetView):
                 for i in range(num_slices):
                     slice_name_list.append(request.form["slice_name_"+str(i)])
                     datasource_name_list.append(request.form["datasource_name_"+str(i)])
-                    datasource_id_list.append(int(request.form["datasource_id_"+str(i)]))
                     database_name_list.append(request.form["database_name_"+str(i)])
-                    database_id_list.append(int(request.form["database_id_"+str(i)]))
+
+                for i in datasource_name_list:
+                    datasource_id_list.append(datasource_dict[i])
+
+                for j in database_name_list:
+                    database_id_list.append(database_dict[j])
 
                 dshbd_name = request.form["new_dshbd_name"]
 
@@ -2110,7 +2112,7 @@ class Superset(BaseSupersetView):
                 with open("./new.json", 'w') as json_file:
                     json.dump(x_new, json_file)
 
-                # Import dashboard 
+                # Import dashboard
                 f = open("./new.json", "rb")
                 import_time = int(time.time())
                 data = json.loads(json.dumps(x_new), object_hook=decode_dashboards)
